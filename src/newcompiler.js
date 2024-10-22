@@ -48,11 +48,11 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				substate = (indext + two) >>> zero;
 			} else if (substate === two || substate === four) {
 				array.push(Math.min(+token, 255) >>> zero);
+				substate = zero;
+				state = zero;
 			} else if (substate === three) {
 				const val = Math.min(+token, 65535);
 				array.push((val % 256) >>> zero, val >> 8);
-			}
-			if (substate >= two) {
 				substate = zero;
 				state = zero;
 			}
