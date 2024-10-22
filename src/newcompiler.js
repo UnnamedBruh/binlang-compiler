@@ -19,7 +19,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		}
 	}
 	for (let i = 0; i !== len; i++, i >>>= zero) {
-		console.log(state, substate);
+		console.log(state, substate, tokens[i]);
 		token = tokens[i];
 		if (state === zero) {
 			switch (token) {
