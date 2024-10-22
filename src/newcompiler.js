@@ -30,10 +30,6 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 					state = one;
 					array.push(zero);
 					break;
-				case "REM":
-					state = two;
-					array.push(one);
-					break;
 				case "COM":
 					state = three;
 					break;
