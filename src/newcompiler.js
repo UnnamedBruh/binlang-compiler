@@ -19,6 +19,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		}
 	}
 	for (let i = 0; i !== len; i++, i >>>= zero) {
+		console.log(state, substate);
 		token = tokens[i];
 		if (state === zero) {
 			switch (token) {
@@ -36,10 +37,10 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				default:
 					throw new SyntaxError("Unexpected token '" + token + "'");
 			}
-		} else if (state === one || state === two) {
+		} else if (state === one) {
 			if (substate === zero) {
 				array.push(...compress(token, true), zero);
-				substate = state === one ? one : zero;
+				substate = one;
 			} else if (substate === one) {
 				const type = token.slice(one, -1);
 				const indext = ({"UINT8":zero,"UINT16":one,"INT8":two})[type];
@@ -53,6 +54,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 			}
 			if (substate >= two) {
 				substate = zero;
+				state = zero;
 			}
 		} else if (state === three) {
 			if (token === "\n" || token === ";") {
@@ -64,6 +66,8 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	const uin = new Uint8Array(array);
 	if (ret === "arraybuffer") {
 		return new ArrayBuffer(uin);
+	} else if (ret === "array") {
+		return array;
 	} else {
 		return uin;
 	}
