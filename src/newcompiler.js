@@ -61,10 +61,10 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 			}
 		}
 	}
-	const arrayBuff = new ArrayBuffer(array);
+	const uin = new Uint8Array(array);
 	if (ret === "arraybuffer") {
-		return arrayBuff;
+		return new ArrayBuffer(uin);
 	} else {
-		return new Uint8Array(arrayBuff);
+		return uin;
 	}
 }
