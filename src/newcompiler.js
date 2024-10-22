@@ -65,7 +65,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	}
 	const uin = new Uint8Array(array);
 	if (ret === "arraybuffer") {
-		return new ArrayBuffer(uin);
+		return uin.buffer;
 	} else if (ret === "array") {
 		return array;
 	} else {
