@@ -1,4 +1,65 @@
-const BINLangCompilerNew = function(code) {
-	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|[0-9]+(\.[0-9]*)?/g);
-	
+const BINLangCompilerNew = function(code, ret = "arraybuffer") {
+	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|[0-9]+(\.[0-9]*)?|\n/gm);
+	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0;
+	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers, substate = zero;
+	function compress(ident, newi = false) {
+		if (identifiers[ident]) return identifiers[ident];
+		const ea = Math.floor(amountOfIdentifiers / 256) >>> zero, array = [];
+		let id = amountOfIdentifiers;
+		for (let i = 0; i !== ea; i++, i >>>= zero) {
+			array.push(Math.min(255, id));
+			id -= 256;
+		}
+		if (newi) {
+			identifiers[ident] = new Uint8Array(array);
+			amountOfIdentifiers++;
+			return identifiers[ident];
+		} else {
+			return new Uint8Array(array);
+		}
+	}
+	for (let i = 0; i !== len; i++, i >>>= zero) {
+		token = tokens[i];
+		if (state === zero) {
+			switch (token) {
+				case "\n":
+					lineCount++, lineCount >>>= zero;
+					break;
+				case "SET":
+					state = one;
+					array.push(zero);
+				case "REM":
+					state = two;
+					array.push(one);
+				case "COM":
+					state = three;
+			}
+		} else if (state === one || state === two) {
+			if (substate === zero) {
+				array.push(...compress(token, true), zero);
+				substate = state === one ? one : zero;
+			} else if (substate === one) {
+				const type = token.slice(one, -1);
+				const indext = ({"UINT8":zero,"UINT16":one,"INT8":two})[type];
+				array.push(indext);
+				substate = (indext + two) >>> zero;
+			} else if (substate === two || substate === four) {
+				array.push(Math.min(+token, 255) >>> zero);
+			} else if (substate === three) {
+				const val = Math.min(+token, 65535);
+				array.push((val % 256) >>> zero, val >> 8);
+			}
+			if (substate >= two) {
+				substate = zero;
+			}
+		} else if (state === three) {
+			
+		}
+	}
+	const arrayBuff = new ArrayBuffer(array);
+	if (ret === "arraybuffer") {
+		return arrayBuff;
+	} else {
+		return new Uint8Array(arrayBuff);
+	}
 }
