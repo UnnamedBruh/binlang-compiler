@@ -1,5 +1,5 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
-	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|[0-9]+(\.[0-9]*)?|\n/gm);
+	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|[0-9]+(\.[0-9]*)?|\n|;/gm);
 	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0;
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers, substate = zero;
 	function compress(ident, newi = false) {
@@ -23,16 +23,22 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		if (state === zero) {
 			switch (token) {
 				case "\n":
+				case ";":
 					lineCount++, lineCount >>>= zero;
 					break;
 				case "SET":
 					state = one;
 					array.push(zero);
+					break;
 				case "REM":
 					state = two;
 					array.push(one);
+					break;
 				case "COM":
 					state = three;
+					break;
+				default:
+					throw new SyntaxError("Unexpected token '" + token + "'");
 			}
 		} else if (state === one || state === two) {
 			if (substate === zero) {
@@ -53,7 +59,10 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				substate = zero;
 			}
 		} else if (state === three) {
-			
+			if (token === "\n" || token === ";") {
+				state = zero;
+				lineCount++;
+			}
 		}
 	}
 	const arrayBuff = new ArrayBuffer(array);
