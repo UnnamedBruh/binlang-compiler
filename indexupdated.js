@@ -1,5 +1,5 @@
 document.getElementById("compile").addEventListener("click", () => {
-	const program = BINLangCompiledNew(document.getElementById("program").value, "arraybuffer")
+	const program = BINLangCompilerNew(document.getElementById("program").value, "arraybuffer")
 	const blob = new Blob([program], {type: "application/octet-stream"})
 	const bu = URL.createObjectURL(blob)
 	const a = document.createElement("a")
