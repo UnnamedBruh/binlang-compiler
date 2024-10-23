@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<title>BINLang: The binary programming language</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			body {
+				background-color: orange;
+				font-family: Arial, sans-serif;
+				line-height: 1;
+			}
+			button, textarea {
+				width: 120px;
+				height: 20px;
+				background-color: darkorange;
+				color: white;
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>BINLang (Revised)</h1>
+		<p>The BINLang language is now revised and re-thought. Now it has more efficient compilation techniques, and it allows way more types than it did before.</p>
+		<textarea id="program" placeholder="You can write your BINLang program code here..."></textarea>
+		<script src="/binlang-compiler/src/newcompiler.js"></script>
+		<button id="compile">Compile File</button>
+		<script src="/binlang-compiler/indexupdated.js"></script>
+		<p>If you have any questions, here is the list of questions that are frequently asked (FAQ):</p>
+		<h2>Why use BINLang?</h2>
+		<p>BINLang takes up a lot less storage compared to traditional program files, mainly because of it's binary architecture, and how it's programs are compressed. It also has a faster speed execution, since interpreters for the program file don't have to lex, or parse the file; they could instead interpret the file directly, reducing overhead of the program.</p>
+		<h2>Do I have to use BINLang?</h2>
+		<p>No, you don't have to use BINLang if this programming language is not required for your projects.</p>
+		<h2>Which programming language does BINLang run on?</h2>
+		<p>BINLang generally runs on JavaScript for the compilation, and a <a href="//lua.org">Lua</a> version of the compiler may be available in the near future.</p>
+		<h2>Can I switch to BINLang right now?</h2>
+		<p>You most certainly can switch to BINLang right now! But again, you don't have to if you don't want to.</p>
+		<h2>Why was BINLang introduced?</h2>
+		<p>BINLang was introduced to help reduce the amount of storage space needed. Having 3000 bytes for a program that just logs six messages - takes up an unnecessary amount of space, and can add up a lot of storage consumption. So that's why BINLang is introduced into the internet.</p>
+		<h2>How is a BINLang program compressed?</h2>
+		<p>The BINLang compiler compresses identifiers into a unique, single byte (unless the identifier is having it's value changed later), which is more efficient than packing each identifier.</p>
+		<h2>When was BINLang re-introduced?</h2>
+		<p>BINLang was re-introduced at the following date: 10/22/2024.</p>
+		<h2>Where can I learn BINLang?</h2>
+		<p>You can learn BINLang <a href="/binlang-compiler/web/tutorial2.html">here</a>!</p>
+		<h2>How come the creator re-introduced BINLang?</h2>
+		<p>The creator felt that he couldn't exactly work with the old version. So, he decided to re-think the language's syntax, and add a static-typed system instead of a dynamic-typed system.</p>
+	</body>
+</html>
