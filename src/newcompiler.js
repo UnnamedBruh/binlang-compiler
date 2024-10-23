@@ -42,7 +42,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				array.push(...compress(token, true), zero);
 				substate = one;
 			} else if (substate === one) {
-				if (token[0] !== "[" || token[token.length - 1] !== "]") {
+				if (token[0] !== "[" || token[token.length - one] !== "]") {
 					throw new SyntaxError("The type has to be bracketed to signify that '" + token + "' is a proper type.")
 				}
 				const indext = typeOrder[token.slice(one, -1)];
