@@ -1,14 +1,14 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[^ \t]/gms);
-	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0;
+	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, eight = 8 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote - 128 >>> 0;
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
-		const ea = (Math.floor(amountOfIdentifiers / 256) + one) >>> zero, array = [];
+		const ea = (Math.floor(amountOfIdentifiers / tfs) + one) >>> zero, array = [];
 		let id = amountOfIdentifiers;
 		for (let i = 0; i !== ea; i++, i >>>= zero) {
-			array.push(Math.min(255, id));
-			id -= 256;
+			array.push(Math.min(tff, id));
+			id -= tfs;
 		}
 		if (newi) {
 			identifiers[ident] = new Uint8Array(array);
@@ -49,19 +49,19 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				array.push(indext);
 				substate = (indext + two) >>> zero;
 			} else if (substate === two || substate === four) {
-				array.push(Math.max(substate === two ? 0 : -128, Math.min(+token + (substate === two ? 0 : 128), 255)) >>> zero);
+				array.push(Math.max(substate === two ? zero : note, Math.min(+token + (substate === two ? zero : ote), tff)) >>> zero);
 				substate = zero;
 				state = zero;
 			} else if (substate === three) {
-				const val = Math.max(Math.min(+token), 65535), 0);
-				array.push((val % 256) >>> zero, val >> 8);
+				const val = Math.max(Math.min(tff, +token), zero);
+				array.push((val % tfs) >>> zero, val >> eight);
 				substate = zero;
 				state = zero;
 			} else if (substate === five) {
 				// Make sure the values don't have any precision errors (TODO: update to make this more efficient later)
-				let value = Math.max(Math.min(+token, 255), 0);
-				let decimal = ((value % 1) * 256) >>> 0;
-				value = value >>> 0;
+				let value = Math.max(Math.min(+token, tff), zero);
+				let decimal = ((value % one) * tfs) >>> zero;
+				value = value >>> zero;
 				array.push(value, decimal);
 				substate = zero;
 				state = zero;
