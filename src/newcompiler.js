@@ -108,6 +108,8 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 					}
 				}
 				if (end) c.push(zero);
+				state = zero;
+				substate = zero;
 			} else if (substate === eight) {
 				const b = token !== "TRUE"
 				if (b && token !== "FALSE") throw new TypeError("If you want to know how to use [UTF16STRING] or [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'TRUE', or 'FALSE', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'");
