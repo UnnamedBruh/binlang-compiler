@@ -21,6 +21,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	}
 	for (let i = 0; i !== len; i++, i >>>= zero) {
 		token = tokens[i];
+		console.log(token, state, substate, valuePassed)
 		if (state === zero) {
 			switch (token) {
 				case "\n":
