@@ -1,7 +1,7 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	const array = [1], tokens = code.match(/\[([A-Z0-9]+)\]|"([^"\n\\]|\\(["\\]|[0-9]+|\\[nt]))+"|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
 	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
-	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four}, stringEsc = {"n": 10 >>> zero, "t": nine}, back = "\\";
+	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four}, stringEsc = {"n":10>>>zero,"t":nine}, back = "\\";
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
@@ -47,7 +47,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				}
 				const indext = typeOrder[token.slice(one, -1)];
 				if (indext === undefined) {
-					throw new TypeError(token + "] is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], and [UTF16STRING].")
+					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], and [UTF16STRING].")
 				}
 				array.push(indext);
 				substate = (indext + two + (indext === four ? two : zero)) >>> zero;
