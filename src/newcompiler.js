@@ -96,7 +96,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 								i++;
 								let code = "";
 								// Using 'true', so the condition can be used in the loop. It's a bit unconventional, but I think it's worth it
-								for (; true; i++) {
+								for (; true; i++, i >>>= zero) {
 									if (isNaN(Number(dec[i]))) break;
 									code += dec[i];
 								}
@@ -107,7 +107,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
 						if (char === zero) {
 							console.warn("Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!");
-							c.push(char);
+							array.push(char);
 							end = false;
 							break;
 						}
