@@ -1,6 +1,6 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[^ \t]/gms);
-	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, eight = 8 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote - 128 >>> 0;
+	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, eight = 8 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
