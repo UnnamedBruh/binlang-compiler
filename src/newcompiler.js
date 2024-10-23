@@ -70,7 +70,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				substate = zero;
 				state = zero;
 			} else if (substate === six) {
-				const dec = token.slice(one, -1), c = [];
+				const dec = token.slice(one, -1);
 				const len = dec.length;
 				let char = 0, end = true;
 				if (valuePassed) {
@@ -84,7 +84,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 							end = false;
 							break;
 						}
-						c.push(char);
+						array.push(char);
 					}
 				} else {
 					let i = zero;
@@ -105,10 +105,10 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 							end = false;
 							break;
 						}
-						c.push(char);
+						array.push(char);
 					}
 				}
-				if (end) c.push(zero);
+				if (end) array.push(zero);
 				state = zero;
 				substate = zero;
 			} else if (substate === eight) {
