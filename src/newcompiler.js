@@ -59,9 +59,8 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				state = zero;
 			} else if (substate === five) {
 				// Make sure the values don't have any precision errors (TODO: update to make this more efficient later)
-				let value = +token;
-				let decimal = ((value * 100000000) % 10000000) / 100000000;
-				decimal = Math.round(decimal * 256) >>> 0;
+				let value = Math.max(Math.min(+token, 255), 0);
+				let decimal = Math.round((value % 1) * 256) >>> 0;
 				value = value >>> 0;
 				array.push(value, decimal);
 				substate = zero;
