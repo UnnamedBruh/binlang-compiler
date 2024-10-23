@@ -88,16 +88,21 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				} else {
 					let i = zero;
 					for (;i < len; i++, i >>>= zero) {
-						char = (dec[i] === back && !isNaN(+dec[i + 1])) ? 65536 : dec.charCodeAt(i) >>> 0;
+						char = (dec[i] === back ? 65536 : dec.charCodeAt(i)) >>> 0;
 						if (char === 65536) {
-							let code, ov = true;
-							i++;
-							while (ov || !isNaN(+dec[i++])) {
-								code += dec[i];
-								ov = false; // Why do I have to do this? :(
+							if (isNaN(+dec[i + one])) {
+								console.warn("An empty backslash can be removed from the string entirely, since there is no character to represent without the integer after the backslash.");
+							} else {
+								i++;
+								let code, ov = true;
+								while (true) {
+									if (isNaN(+dec[i])) break;
+									code += dec[i];
+									i++;
+								}
+								char = +code;
+								i--;
 							}
-							char = +code;
-							i--;
 						}
 						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
 						if (char === zero) {
