@@ -1,6 +1,6 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[^ ]/gms);
-	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0;
+	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0;
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers, substate = zero;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
@@ -42,16 +42,25 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				substate = one;
 			} else if (substate === one) {
 				const type = token.slice(one, -1);
-				const indext = ({"UINT8":zero,"UINT16":one,"INT8":two})[type];
+				const indext = ({"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three})[type];
 				array.push(indext);
 				substate = (indext + two) >>> zero;
 			} else if (substate === two || substate === four) {
-				array.push(Math.max(substate === two ? 0 : -128, Math.min(+token + (substate === two ? 0 : 128), 255)) >>> zero);
+				array.push(Math.max(substate === two ? 0 : -128, Math.min(Math.floor(+token) + (substate === two ? 0 : 128), 255)) >>> zero);
 				substate = zero;
 				state = zero;
 			} else if (substate === three) {
-				const val = Math.min(+token, 65535);
+				const val = Math.max(Math.min(Math.floor(+token), 65535), 0);
 				array.push((val % 256) >>> zero, val >> 8);
+				substate = zero;
+				state = zero;
+			} else if (substate === five) {
+				// Make sure the values don't have any precision errors (TODO: update to make this more efficient later)
+				let value = +token;
+				let decimal = ((value * 100000000) % 10000000) / 100000000;
+				decimal = Math.round(decimal * 256) >>> 0;
+				value = value >>> 0;
+				array.push(value, decimal);
 				substate = zero;
 				state = zero;
 			}
