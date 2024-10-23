@@ -90,18 +90,18 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 					for (;i < len; i++, i >>>= zero) {
 						char = (dec[i] === back ? 65536 : dec.charCodeAt(i)) >>> 0;
 						if (char === 65536) {
-							if (isNaN(+dec[i + one])) {
-								console.warn("An empty backslash can be removed from the string entirely, since there is no character to represent without the integer after the backslash.");
+							if (isNaN(Number(dec[i + 1]))) {
+								console.warn("An empty escaper can be removed from the string entirely, since there is no character to represent");
 							} else {
 								i++;
-								let code, ov = true;
-								while (true) {
-									if (isNaN(+dec[i])) break;
+								let code = "";
+								// Using 'true', so the condition can be used in the loop. It's a bit unconventional, but I think it's worth it
+								for (; true; i++) {
+									if (isNaN(Number(dec[i]))) break;
 									code += dec[i];
-									i++;
 								}
-								char = +code;
 								i--;
+								char = Number(code);
 							}
 						}
 						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
