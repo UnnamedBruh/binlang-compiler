@@ -1,5 +1,5 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
-	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[^ ]/gms);
+	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[^ \t]/gms);
 	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0;
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers, substate = zero;
 	function compress(ident, newi = false) {
@@ -43,6 +43,9 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 			} else if (substate === one) {
 				const type = token.slice(one, -1);
 				const indext = ({"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three})[type];
+				if (indext === undefined) {
+					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], and [UFLOAT16].")
+				}
 				array.push(indext);
 				substate = (indext + two) >>> zero;
 			} else if (substate === two || substate === four) {
@@ -65,7 +68,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				state = zero;
 			}
 		} else if (state === three) {
-			if (token === "\n" || token === ";") {
+			if (token === "\n") {
 				state = zero;
 				lineCount++;
 			}
