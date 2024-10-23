@@ -1,8 +1,8 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
-	const array = [1], tokens = code.match(/\[([A-Z0-9]+)\]|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
-	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
-	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"UTF16STRING":five};
-	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero;
+	const array = [1], tokens = code.match(/\[([A-Z0-9]+)\]|"([^"\n\\]|\\(["\\]|[0-9]+|\\n))+"|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
+	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
+	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four};
+	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
 		const ea = (Math.floor(amountOfIdentifiers / tfs) + one) >>> zero, array = [];
@@ -50,7 +50,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 					throw new TypeError(token + "] is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], and [UTF16STRING].")
 				}
 				array.push(indext);
-				substate = (indext + two) >>> zero;
+				substate = (indext + two + (indext === four ? two : zero)) >>> zero;
 			} else if (substate === two || substate === four) {
 				array.push(Math.max(substate === two ? zero : note, Math.min(+token + (substate === two ? zero : ote), tff)) >>> zero);
 				substate = zero;
@@ -68,6 +68,50 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				array.push(value, decimal);
 				substate = zero;
 				state = zero;
+			} else if (substate === six) {
+				const dec = token.slice(one, -1), c = [];
+				const len = dec.length;
+				let char = 0, end = true;
+				if (valuePassed) {
+					for (let i = zero; i < len; i++, i >>>= zero) {
+						char = dec.charCodeAt(i) >>> 0;
+						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+						if (char === zero) {
+							console.warn("Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!");
+							c.push(char);
+							end = false;
+							break;
+						}
+						c.push(char);
+					}
+				} else {
+					let i = zero;
+					for (;i < len; i++, i >>>= zero) {
+						char = (dec[i] === "\\" && !isNaN(+dec[i + 1])) ? 65537 : dec.charCodeAt(i) >>> 0;
+						if (char === 65537) {
+							let code;
+							while (!isNaN(+dec[i++])) {
+								code += dec[i];
+							}
+							char = +code;
+							i--;
+						}
+						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+						if (char === zero) {
+							console.warn("Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!");
+							c.push(char);
+							end = false;
+							break;
+						}
+						c.push(char);
+					}
+				}
+				if (end) c.push(zero);
+			} else if (substate === eight) {
+				const b = token !== "TRUE"
+				if (b && token !== "FALSE") throw new TypeError("If you want to know how to use [UTF16STRING] or [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'TRUE', or 'FALSE', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'");
+				valuePassed = b;
+				substate -= two;
 			}
 		} else if (state === three) {
 			if (token === "\n") {
