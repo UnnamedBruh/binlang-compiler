@@ -42,8 +42,8 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				array.push(...compress(token, true), zero);
 				substate = one;
 			} else if (substate === one) {
-				if (token[0] !== "[") {
-					throw new SyntaxError("The type has to be bracketed to signify that")
+				if (token[0] !== "[" || token[token.length - 1] !== "]") {
+					throw new SyntaxError("The type has to be bracketed to signify that '" + token + "' is a proper type.")
 				}
 				const indext = typeOrder[token.slice(one, -1)];
 				if (indext === undefined) {
