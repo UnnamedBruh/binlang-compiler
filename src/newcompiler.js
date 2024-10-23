@@ -1,5 +1,5 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
-	const array = [1], tokens = code.match(/(?:\[([A-Z0-9]+)\])|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[^ \t]/gms);
+	const array = [1], tokens = code.match(/\[([A-Z0-9]+)\]|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
 	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, eight = 8 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
 	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three};
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero;
@@ -42,9 +42,12 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				array.push(...compress(token, true), zero);
 				substate = one;
 			} else if (substate === one) {
-				const indext = typeOrder[token];
+				if (token[0] !== "[") {
+					throw new SyntaxError("The type has to be bracketed to signify that")
+				}
+				const indext = typeOrder[token.slice(one, -1)];
 				if (indext === undefined) {
-					throw new TypeError("[" + token + "] is not a valid type. The current types available are [UINT8], [UINT16], [INT8], and [UFLOAT16].")
+					throw new TypeError(token + "] is not a valid type. The current types available are [UINT8], [UINT16], [INT8], and [UFLOAT16].")
 				}
 				array.push(indext);
 				substate = (indext + two) >>> zero;
@@ -74,7 +77,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		}
 	}
 	if (state !== zero || substate !== zero) {
-		throw new SyntaxError("Unexpected end of program")
+		throw new SyntaxError("Unexpected end of program");
 	}
 	const uin = new Uint8Array(array);
 	if (ret === "arraybuffer") {
