@@ -73,6 +73,9 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 			}
 		}
 	}
+	if (state !== zero || substate !== zero) {
+		throw new SyntaxError("Unexpected end of program")
+	}
 	const uin = new Uint8Array(array);
 	if (ret === "arraybuffer") {
 		return uin.buffer;
