@@ -90,9 +90,11 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 					for (;i < len; i++, i >>>= zero) {
 						char = (dec[i] === back && !isNaN(+dec[i + 1])) ? 65536 : dec.charCodeAt(i) >>> 0;
 						if (char === 65536) {
-							let code;
-							while (!isNaN(+dec[i++])) {
+							let code, ov = true;
+							i++;
+							while (ov || !isNaN(+dec[i++])) {
 								code += dec[i];
+								ov = false; // Why do I have to do this? :(
 							}
 							char = +code;
 							i--;
