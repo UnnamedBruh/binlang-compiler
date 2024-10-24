@@ -21,12 +21,8 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		}
 	}
 	let i = zero;
-	function debug() {
-		console.log(token, state, substate)
-	}
 	for (;i !== len; i++, i >>>= zero) {
 		token = tokens[i];
-		debug()
 		if (state === zero) {
 			switch (token) {
 				case "\n":
@@ -42,6 +38,10 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 					break;
 				case "MCOM":
 					state = two;
+					break;
+				case undefined:
+					// Somehow, somewhere, a weird thing happened.
+					i = len - one;
 					break;
 				default:
 					throw new SyntaxError("Unexpected token '" + token + "'");
@@ -151,7 +151,6 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		} else if (state === two) {
 			while (token !== "ECOM" && i !== len) {
 				token = tokens[i];
-				debug()
 				i++;
 			}
 			state = zero;
@@ -159,7 +158,6 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		} else if (state === three) {
 			while (token[0] !== "\n" && i !== len) {	
 				token = tokens[i];
-				debug()
 				i++;
 			}
 			state = zero;
