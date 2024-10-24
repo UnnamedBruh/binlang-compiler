@@ -108,7 +108,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 								char = Number(code);
 							}
 						}
-						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+						if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
 						if (char === zero) {
 							console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
 							array.push(char);
