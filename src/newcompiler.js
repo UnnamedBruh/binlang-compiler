@@ -1,8 +1,8 @@
 const BINLangCompilerNew = (function() {
-const regex = /\[[A-Z0-9]+\]|"([^"\n\\]|\\([0-9]+|[^ 0-9\n\t]))+"|[a-zA-Z_]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0
+const regex = /\[[A-Z0-9]+\]|"([^"\n\\]|\\([0-9]+|[^ 0-9\n\t]))*"|[a-zA-Z_]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0
 const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1;
 const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":ten}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
-integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE";
+integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE", blank = "\"\"";
 return function(code, ret = "arraybuffer") {
 	const array = [one], tokens = code.match(regex);
 	const len = tokens.length >>> zero;
@@ -81,58 +81,62 @@ return function(code, ret = "arraybuffer") {
 				substate = zero;
 				state = zero;
 			} else if (substate === six) {
-				const dec = token.slice(one, no);
-				const len = dec.length;
-				let char = zero, end = true;
-				if (valuePassed === zero) {
-					let i = zero;
-					for (;i < len; i++, i >>>= zero) {
-						char = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
-						if (char === zero || char === st) {
-							console.warn(char === zero ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
-							array.push(char);
-							end = false;
-							break;
-						}
-						array.push(char);
-					}
-				} else if (valuePassed === one) {
-					let j = zero;
-					for (;j !== len; j++, j >>>= zero) {
-						char = (dec[j] === back ? st : dec.charCodeAt(j)) >>> zero;
-						if (char === st) {
-							if (isNaN(Number(dec[j + one]))) {
-								console.warn("An empty escaper can be removed from the string entirely, since there is no character to represent");
-							} else {
-								j++;
-								let code = "";
-								// Using 'true', so the condition can be used in the loop. It's a bit unconventional, but I think it's worth it
-								for (; true; j++, j >>>= zero) {
-									if (isNaN(Number(dec[j]))) break;
-									code += dec[j];
-								}
-								j--;
-								char = Number(code);
-							}
-						}
-						if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
-						if (char === zero) {
-							console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
-							array.push(char);
-							end = false;
-							break;
-						}
-						array.push(char);
-					}
+				if (token === blank) {
+					array.push(zero);
 				} else {
-					for (let j = zero; j !== len; j++, j >>>= zero) {
-						char = dec.charCodeAt(j) >>> zero;
-						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
-						array.push(char);
+					const dec = token.slice(one, no);
+					const len = dec.length;
+					let char = zero, end = true;
+					if (valuePassed === zero) {
+						let i = zero;
+						for (;i < len; i++, i >>>= zero) {
+							char = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
+							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+							if (char === zero || char === st) {
+								console.warn(char === zero ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
+								array.push(char);
+								end = false;
+								break;
+							}
+							array.push(char);
+						}
+					} else if (valuePassed === one) {
+						let j = zero;
+						for (;j !== len; j++, j >>>= zero) {
+							char = (dec[j] === back ? st : dec.charCodeAt(j)) >>> zero;
+							if (char === st) {
+								if (isNaN(Number(dec[j + one]))) {
+									console.warn("An empty escaper can be removed from the string entirely, since there is no character to represent");
+								} else {
+									j++;
+									let code = "";
+									// Using 'true', so the condition can be used in the loop. It's a bit unconventional, but I think it's worth it
+									for (; true; j++, j >>>= zero) {
+										if (isNaN(Number(dec[j]))) break;
+										code += dec[j];
+									}
+									j--;
+									char = Number(code);
+								}
+							}
+							if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+							if (char === zero) {
+								console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
+								array.push(char);	
+								end = false;
+								break;
+							}
+							array.push(char);
+						}
+					} else {
+						for (let j = zero; j !== len; j++, j >>>= zero) {
+							char = dec.charCodeAt(j) >>> zero;
+							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+							array.push(char);
+						}
 					}
+					if (end) array.push(zero);
 				}
-				if (end) array.push(zero);
 				state = zero;
 				substate = zero;
 			} else if (substate === eight) {
