@@ -5,7 +5,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
-		const ea = (amountOfIdentifiers / tfs + one) >>> zero, array = [];
+		const ea = ((amountOfIdentifiers >> eight) + one) >>> zero, array = [];
 		let id = amountOfIdentifiers;
 		for (let i = 0; i !== ea; i++, i >>>= zero) {
 			array.push(Math.min(tff, id));
