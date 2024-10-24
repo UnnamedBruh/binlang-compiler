@@ -1,7 +1,7 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
-	const array = [1], tokens = code.match(/\[[A-Z0-9]+\]|"([^"\n\\]|\\(["\\]|[0-9]+|\\[nt]))+"|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
-	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
-	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four}, stringEsc = {"n":10>>>zero,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."};
+	const array = [1 >>> 0], tokens = code.match(/\[[A-Z0-9]+\]|"([^"\n\\]|\\(["\\]|[0-9]+|\\[nt]))+"|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
+	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, ten = 10 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
+	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":ten}, stringEsc = {"n":10>>>zero,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."};
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
@@ -19,7 +19,8 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 			return new Uint8Array(array);
 		}
 	}
-	for (let i = 0; i !== len; i++, i >>>= zero) {
+	let i = zero;
+	for (;i !== len; i++, i >>>= zero) {
 		token = tokens[i];
 		if (state === zero) {
 			switch (token) {
@@ -122,6 +123,16 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				if (b && token !== "FALSE") throw new TypeError("If you want to know how to use [UTF16STRING] or [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'TRUE', or 'FALSE', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'");
 				valuePassed = b;
 				substate -= two;
+			} else if (substate === ten) {
+				const b = token === "TRUE";
+				if (!b && token !== "FALSE") {
+					console.warn("Only two values (TRUE, FALSE) can be represented. The value that is represented was " + token + ". Defaulting to the FALSE boolean...");
+					array.push(zero);
+				} else {
+					array.push(b >>> zero);
+				}
+				substate = zero;
+				state = zero;
 			}
 		} else if (state === three) {
 			if (token === "\n") {
