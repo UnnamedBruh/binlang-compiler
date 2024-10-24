@@ -1,7 +1,7 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	const array = [1 >>> 0], tokens = code.match(/\[[A-Z0-9]+\]|"([^"\n\\]|\\([0-9]+|[^ 0-9\n\t]))+"|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
 	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, ten = 10 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
-	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":ten}, stringEsc = {"n":10>>>zero,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
+	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":ten}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
 		integ = {"STANDARD":zero,"INTEGER":one,"NONE":two};
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
 	function compress(ident, newi = false) {
@@ -21,8 +21,12 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		}
 	}
 	let i = zero;
+	function debug() {
+		console.log(token, state, substate)
+	}
 	for (;i !== len; i++, i >>>= zero) {
 		token = tokens[i];
+		debug()
 		if (state === zero) {
 			switch (token) {
 				case "\n":
@@ -147,13 +151,15 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 		} else if (state === two) {
 			while (token !== "ECOM" && i !== len) {
 				token = tokens[i];
+				debug()
 				i++;
 			}
 			state = zero;
 			lineCount++, lineCount >>>= 0;
 		} else if (state === three) {
-			while (token[0] !== "\n" && i !== len) {
+			while (token[0] !== "\n" && i !== len) {	
 				token = tokens[i];
+				debug()
 				i++;
 			}
 			state = zero;
