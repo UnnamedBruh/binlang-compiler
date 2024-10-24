@@ -1,8 +1,8 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 	const array = [1 >>> 0], tokens = code.match(/\[[A-Z0-9]+\]|"([^"\n\\]|\\([0-9]+|[^ 0-9\n\t]))+"|[a-zA-Z_]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
-	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, ten = 10 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0, st = 65536 >>> 0;
+	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, ten = 10 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0, st = 65536 >>> 0, no = -1;
 	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":ten}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
-		integ = {"STANDARD":zero,"INTEGER":one,"NONE":two};
+		integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE";
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
@@ -51,10 +51,10 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				array.push(...compress(token, true), zero);
 				substate = one;
 			} else if (substate === one) {
-				if (token[zero] !== "[" || token[token.length - one] !== "]") {
+				if (token[zero] !== lb || token[token.length - one] !== rb) {
 					throw new SyntaxError("The type has to be bracketed to signify that '" + token + "' is a proper type.")
 				}
-				const indext = typeOrder[token.slice(one, -1)];
+				const indext = typeOrder[token.slice(one, no)];
 				if (indext === undefined) {
 					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], [UTF16STRING], and [BOOLEAN].")
 				}
@@ -78,7 +78,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				substate = zero;
 				state = zero;
 			} else if (substate === six) {
-				const dec = token.slice(one, -1);
+				const dec = token.slice(one, no);
 				const len = dec.length;
 				let char = zero, end = true;
 				if (valuePassed === zero) {
@@ -96,7 +96,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 					}
 				} else if (valuePassed === one) {
 					let j = zero;
-					for (;j < len; j++, j >>>= zero) {
+					for (;j !== len; j++, j >>>= zero) {
 						char = (dec[j] === back ? st : dec.charCodeAt(j)) >>> zero;
 						if (char === st) {
 							if (isNaN(Number(dec[j + one]))) {
@@ -109,7 +109,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 									if (isNaN(Number(dec[j]))) break;
 									code += dec[j];
 								}
-								i--;
+								j--;
 								char = Number(code);
 							}
 						}
@@ -123,7 +123,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 						array.push(char);
 					}
 				} else {
-					for (let j = zero; j < len; j++, j >>>= zero) {
+					for (let j = zero; j !== len; j++, j >>>= zero) {
 						char = dec.charCodeAt(j) >>> zero;
 						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
 						array.push(char);
@@ -138,8 +138,8 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				valuePassed = b;
 				substate -= two;
 			} else if (substate === ten) {
-				const b = token === "TRUE";
-				if (!b && token !== "FALSE") {
+				const b = token === trst;
+				if (!b && token !== fast) {
 					console.warn("Only two values (TRUE, FALSE) can be represented. The value that is represented was " + token + ". Defaulting to the FALSE boolean...");
 					array.push(zero);
 				} else {
@@ -149,14 +149,14 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				state = zero;
 			}
 		} else if (state === two) {
-			while (token !== "ECOM" && i !== len) {
+			while (token !== eco && i !== len) {
 				token = tokens[i];
 				i++;
 			}
 			state = zero;
 			lineCount++, lineCount >>>= zero;
 		} else if (state === three) {
-			while (token[zero] !== "\n" && i !== len) {	
+			while (token[zero] !== newl && i !== len) {	
 				token = tokens[i];
 				i++;
 			}
