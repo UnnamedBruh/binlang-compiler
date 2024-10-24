@@ -48,7 +48,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				}
 				const indext = typeOrder[token.slice(one, -1)];
 				if (indext === undefined) {
-					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], and [UTF16STRING].")
+					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], [UTF16STRING], and [BOOLEAN].")
 				}
 				array.push(indext);
 				substate = (indext + two + (indext === four ? two : zero)) >>> zero;
