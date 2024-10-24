@@ -135,7 +135,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				state = zero;
 			}
 		} else if (state === three) {
-			while (token[0] !== "\n" || i === len) {
+			while (token[0] !== "\n" && i !== len) {
 				token = tokens[i];
 				i++;
 			}
