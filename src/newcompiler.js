@@ -143,7 +143,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 			lineCount++, lineCount >>>= 0;
 		}
 	}
-	if ((state !== zero && state !== three) || substate !== zero) {
+	if (state !== zero || substate !== zero) {
 		throw new SyntaxError("Unexpected end of program");
 	}
 	const uin = new Uint8Array(array);
