@@ -90,25 +90,25 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 						array.push(char);
 					}
 				} else {
-					let i = zero;
-					for (;i < len; i++, i >>>= zero) {
-						char = (dec[i] === back ? 65536 : dec.charCodeAt(i)) >>> 0;
+					let j = zero;
+					for (;j < len; j++, j >>>= zero) {
+						char = (dec[j] === back ? 65536 : dec.charCodeAt(j)) >>> 0;
 						if (char === 65536) {
-							if (isNaN(Number(dec[i + 1]))) {
+							if (isNaN(Number(dec[j + 1]))) {
 								console.warn("An empty escaper can be removed from the string entirely, since there is no character to represent");
 							} else {
-								i++;
+								j++;
 								let code = "";
 								// Using 'true', so the condition can be used in the loop. It's a bit unconventional, but I think it's worth it
-								for (; true; i++, i >>>= zero) {
-									if (isNaN(Number(dec[i]))) break;
-									code += dec[i];
+								for (; true; j++, j >>>= zero) {
+									if (isNaN(Number(dec[j]))) break;
+									code += dec[j];
 								}
 								i--;
 								char = Number(code);
 							}
 						}
-						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
 						if (char === zero) {
 							console.warn("Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!");
 							array.push(char);
