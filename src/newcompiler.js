@@ -4,6 +4,7 @@ const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8ST
 integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE";
 return function(code, ret = "arraybuffer") {
 	const array = [one], tokens = code.match(regex);
+	const len = tokens.length;
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
