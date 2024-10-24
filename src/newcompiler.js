@@ -35,6 +35,9 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				case "COM":
 					state = three;
 					break;
+				case "MCOM":
+					state = two;
+					break;
 				default:
 					throw new SyntaxError("Unexpected token '" + token + "'");
 			}
@@ -134,6 +137,13 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				substate = zero;
 				state = zero;
 			}
+		} else if (state === two) {
+			while (token !== "ECOM" && i !== len) {
+				token = tokens[i];
+				i++;
+			}
+			state = zero;
+			lineCount++, lineCount >>>= 0;
 		} else if (state === three) {
 			while (token[0] !== "\n" && i !== len) {
 				token = tokens[i];
