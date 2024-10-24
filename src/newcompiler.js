@@ -1,5 +1,5 @@
 const BINLangCompilerNew = function(code, ret = "arraybuffer") {
-	const array = [1 >>> 0], tokens = code.match(/\[[A-Z0-9]+\]|"([^"\n\\]|\\(["\\nt]|[0-9]+))+"|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
+	const array = [1 >>> 0], tokens = code.match(/\[[A-Z0-9]+\]|"([^"\n\\]|\\([0-9]+|[^ 0-9\n\t]))+"|[a-zA-Z]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms);
 	const len = tokens.length >>> 0, zero = 0 >>> 0, one = 1 >>> 0, two = 2 >>> 0, three = 3 >>> 0, four = 4 >>> 0, five = 5 >>> 0, six = 6 >>> 0, seven = 7 >>> 0, eight = 8 >>> 0, nine = 9 >>> 0, ten = 10 >>> 0, tff = 255 >>> 0, tfs = 256 >>> 0, note = -128, ote = 128 >>> 0;
 	const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":ten}, stringEsc = {"n":10>>>zero,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."};
 	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = zero, substate = zero, valuePassed;
@@ -79,7 +79,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 				if (valuePassed) {
 					let i = zero;
 					for (;i < len; i++, i >>>= zero) {
-						char = (dec[i] === back ? stringEsc[dec[i++ + 1] || 65536] : dec.charCodeAt(i)) >>> 0;
+						char = (dec[i] === back ? stringEsc[dec[i++ + one] || 65536] : dec.charCodeAt(i)) >>> zero;
 						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
 						if (char === zero || char === 65536) {
 							console.warn(char === zero ? msgWarn[char] : msgWarn[char].replace(/CHAR/, dec[i]));
@@ -110,7 +110,7 @@ const BINLangCompilerNew = function(code, ret = "arraybuffer") {
 						}
 						if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
 						if (char === zero) {
-							console.warn("Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!");
+							console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
 							array.push(char);
 							end = false;
 							break;
