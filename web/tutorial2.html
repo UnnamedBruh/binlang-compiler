@@ -1,0 +1,47 @@
+<h1>Defining Variables</h1>
+<p>The first iconic command ever, is to define a variable. It's the most important, and one of the oldest commands, ever. You can define a variable by using the <code>SET</code> operator. Here are important things to know:</p>
+<ul>
+	<li>The identifier can <u>only</u> be represented with UPPERCASE, lowercase, and underscore (_) characters.</li>
+	<li>In the legacy version, variables can only be represented using an integer. In this version, you have to specify which type the value is, due to the now <u>static-typed</u> environment.</li>
+	<li>The value would represent a value that fits the provided type under other rules:<ul>
+		<li>UINT8:<ul>
+			<li><a style="background-color: yellow">This value is an unsigned integer. It doesn't need to represent whether the value is negative or not.</a></li>
+			<li>The value can be represented between 0 - 255. If a value is provided beyond this range, the value will automatically be clamped into that range.</li>
+			<li>The value can only be represented using numbers. Attempting to use a decimal will <b>floor</b> the value.</li>
+			<li>The value takes up <b>one byte</b> per defined type, which is due to the value only needing eight bits (e.g. <a style="background-color: yellow">8 bits = 1 byte</a>).</li>
+			<li><u>You can use this value for when you want to represent a player's level, or the game's difficulty.</u></li>
+		</ul></li>
+		<li>UINT16:<ul>
+			<li><a style="background-color: yellow">This value is an unsigned integer, like UINT8. It doesn't need to represent whether the value is negative or not.</a></li>
+			<li>The value can be represented between 0 - 65536. If a value is provided beyond this range, the value will automatically be clamped into that range, like UINT8.</li>
+			<li>The value can only be represented using numbers. Attempting to use a decimal will <b>floor</b> the value, like UINT8.</li>
+			<li>The value takes up <b>two bytes</b> per defined type, which is due to the value only needing sixteen bits.</li>
+			<li><u>You can use this value for when you want to represent the player's current XP (eXperience Points), or the player's current health/maximum health.</u></li>
+		</ul></li>
+		<li>INT8:<ul>
+			<li><a style="background-color: yellow">This value is a signed integer. It shows whether the value is negative or not.</a></li>
+			<li>The value can be represented between -128 - 127. If a value is provided beyond this range, the value will automatically be clamped into that range, like UINT8.</li>
+			<li>The value can only be represented using numbers. Attempting to use a decimal will <b>floor</b> the value, like UINT8.</li>
+			<li>The value takes up <b>one byte</b> per defined type, which is due to the value only needing eight bits (e.g. <a style="background-color: yellow">8 bits = 1 byte</a>), like UINT8.</li>
+			<li><u>You can use this value for when you want to represent a simple number for mathematical equations, or the player's walking direction (if implemented in a specific way).</u></li>
+		</ul></li>
+		<li>UFLOAT16:<ul>
+			<li><a style="background-color: yellow">This value is an unsigned float. It does not show whether the value is negative or not.</a></li>
+			<li>The value can be represented between 0 - 255.99609375. If a value is provided beyond this range, the value will automatically be clamped into that range, like UINT8.</li>
+			<li>The value can only be represented using numbers, and periods, like how this sentence is ended by. However, the compiler handles this in a unique way. Using a decimal will <b>round</b> the decimal to the nearest 0.00390625th, unlike how similar compilers would handle this.</li>
+			<li>The value takes up <b>two bytes</b> per defined type, which is due to the value only needing sixteen bits (e.g. <a style="background-color: yellow">16 bits = 2 bytes</a>), like UINT16.</li>
+			<li><u>You can use this value for when you want to represent an enemy's health, or when you want to represent a position of a paddle (like in <i>Pong: The Classic Arcade Game</i>).</u></li>
+		</ul></li>
+		<li>UTF8STRING:<ul>
+			<li><a style="background-color: yellow">This value is a <u>parameter-based</u> type, which isn't a very common feature. A single parameter is needed, and the parameter is placed before the value. The parameter would make the compiler interpret the value in three different ways, depending on the parameter.</a></li>
+			<li>The value can be represented at <u>any length</u> - there are no constraints, or any limit to the length of the string.</li>
+			<li>The string uses the UTF8 encoding format, which makes it so the string can represent <b>256</b> unique characters.</li>
+			<li>The value takes up <b>one byte</b> per character, which the measuring can be dependent on how many characters are used in the string.</li>
+			<li><u>You can use this value for when you want to script a game dialogue, or a tutorial message of how to play the game.</u></li>
+			<li>The string value will throw an error if there is a character beyond the 256 character range. UTF16STRING will be a type that will later come in the future.</li>
+		</ul></li>
+		<li>BOOLEAN:<ul>
+			<li><a>This value is very simple; it represents two values - <code>TRUE</code>, or <code>FALSE</code>.</a></li>
+		</ul></li>
+	</ul></li>
+</ul>
