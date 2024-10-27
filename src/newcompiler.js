@@ -1,7 +1,7 @@
 const BINLangCompilerNew = (function() {
 const regex = /\[[A-Z0-9]+\]|"([^"\n\\]|\\(\d+|[^ 0-9\n\t]))*"|\w+|-?\d+(\.\d*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0;
-const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, eleven = 11 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1, set = "SET", comm = "COM", mcom = "MCOM";
-const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"UTF16STRING":nine,"BOOLEAN":eight}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
+const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, eleven = 11 >>> zero, twelve = 12 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1, set = "SET", comm = "COM", mcom = "MCOM";
+const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":six,"UTF16STRING":ten,"BOOLEAN":eight}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
 integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE", blank = "\"\"", semi = ";";
 return function(code, ret = "arraybuffer") {
 	const array = [one], tokens = code.match(regex);
@@ -59,7 +59,7 @@ return function(code, ret = "arraybuffer") {
 				}
 				const indext = typeOrder[token.slice(one, no)];
 				if (indext === undefined) {
-					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], and [BOOLEAN]. Found at line " + lineCount + ", token " + i)
+					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], [UTF16STRING], and [BOOLEAN]. Found at line " + lineCount + ", token " + i)
 				}
 				array.push(indext);
 				substate = (indext + two + (indext === four ? two : zero)) >>> zero;
@@ -201,7 +201,7 @@ return function(code, ret = "arraybuffer") {
 				substate = zero;
 			} else if (substate === eight) {
 				const b = integ[token];
-				if (b === undefined) throw new TypeError("If you want to know how to use [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'TRUE', or 'FALSE', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'. Found at line " + lineCount + ", token " + i);
+				if (b === undefined) throw new TypeError("If you want to know how to use [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'NONE', 'STANDARD', or 'INTEGER', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'. Found at line " + lineCount + ", token " + i);
 				valuePassed = b;
 				substate -= two;
 			} else if (substate === ten) {
@@ -214,6 +214,11 @@ return function(code, ret = "arraybuffer") {
 				}
 				substate = zero;
 				state = zero;
+			} else if (substate === twelve) {
+				const b = integ[token];
+				if (b === undefined) throw new TypeError("If you want to know how to use [UTF16STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'NONE', 'STANDARD', or 'INTEGER', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'. Found at line " + lineCount + ", token " + i);
+				valuePassed = b;
+				substate -= one;
 			}
 		} else if (state === two) {
 			while (token !== eco && i !== len) {
