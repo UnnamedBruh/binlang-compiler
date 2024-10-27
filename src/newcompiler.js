@@ -70,7 +70,7 @@ return function(code, ret = "arraybuffer") {
 				state = zero;
 			} else if (substate === three) {
 				const val = Math.max(Math.min(tff, +token), zero);
-				array.push((val % tfs) >>> zero, val >> eight);
+				array.push((val & tff) >>> zero, val >> eight);
 				substate = zero;
 				state = zero;
 			} else if (substate === five) {
@@ -92,7 +92,7 @@ return function(code, ret = "arraybuffer") {
 						let i = zero;
 						for (;i < len; i++, i >>>= zero) {
 							char = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type (that will come out in the future). Found at line " + lineCount + ", token " + i);
+							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
 							if (char === zero || char === st) {
 								console.warn(char === zero ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
 								array.push(char);
@@ -120,10 +120,10 @@ return function(code, ret = "arraybuffer") {
 									char = Number(code);
 								}
 							}
-							if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type (that will come in the future). Found at line " + lineCount + ", token " + i);
+							if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
 							if (char === zero) {
 								console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
-								array.push(char);	
+								array.push(char);
 								end = false;
 								break;
 							}
@@ -132,7 +132,7 @@ return function(code, ret = "arraybuffer") {
 					} else {
 						for (let j = zero; j !== len; j++, j >>>= zero) {
 							char = dec.charCodeAt(j) >>> zero;
-							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type (that will come in the future). Found at line " + lineCount + ", token " + i);
+							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
 							array.push(char);
 						}
 					}
@@ -151,7 +151,7 @@ return function(code, ret = "arraybuffer") {
 						let i = zero;
 						for (;i < len; i++, i >>>= zero) {
 							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							char = [config % tfs, config >> eight]
+							char = [config & tff, config >> eight]
 							if ((char[zero] === zero && char[one] === zero) || (char[zero] === tff && char[one] === tff)) {
 								console.warn((char[zero] === zero && char[one] === zero) ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
 								array.push(...char);
@@ -164,7 +164,7 @@ return function(code, ret = "arraybuffer") {
 						let j = zero;
 						for (;j !== len; j++, j >>>= zero) {
 							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							char = [config % tfs, config >> eight];
+							char = [config & tff, config >> eight];
 							if (char[zero] === tff && char[one] === tff) {
 								if (isNaN(Number(dec[j + one]))) {
 									console.warn("An empty escaper can be removed from the string entirely, since there is no character to represent");
@@ -191,7 +191,7 @@ return function(code, ret = "arraybuffer") {
 					} else {
 						for (let j = zero; j !== len; j++, j >>>= zero) {
 							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							char = [config % tfs, config >> eight];
+							char = [config & tff, config >> eight];
 							array.push(...char);
 						}
 					}
@@ -239,13 +239,12 @@ return function(code, ret = "arraybuffer") {
 	if (state !== zero || substate !== zero) {
 		throw new SyntaxError("Unexpected end of program");
 	}
-	const uin = new Uint8Array(array);
 	if (ret === "arraybuffer") {
-		return uin.buffer;
+		return new Uint8Array(array).buffer;
 	} else if (ret === "array") {
 		return array;
 	} else {
-		return uin;
+		return new Uint8Array(array);
 	}
 }
 })();
