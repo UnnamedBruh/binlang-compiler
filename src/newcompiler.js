@@ -1,8 +1,8 @@
 const BINLangCompilerNew = (function() {
-const regex = /\[[A-Z0-9]+\]|"([^"\n\\]|\\([0-9]+|[^ 0-9\n\t]))*"|[a-zA-Z_]+|-?[0-9]+(\.[0-9]*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0
-const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1;
+const regex = /\[[A-Z0-9]+\]|"([^"\n\\]|\\([0-9]+|[^ 0-9\n\t]))*"|\w+|-?\d+(\.\d*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0
+const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1, set = "SET", comm = "COM", mcom = "MCOM";
 const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":eight}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
-integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE", blank = "\"\"";
+integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE", blank = "\"\"", semi = ";";
 return function(code, ret = "arraybuffer") {
 	const array = [one], tokens = code.match(regex);
 	const len = tokens.length >>> zero;
@@ -28,18 +28,18 @@ return function(code, ret = "arraybuffer") {
 		token = tokens[i];
 		if (state === zero) {
 			switch (token) {
-				case "\n":
-				case ";":
+				case newl:
+				case semi:
 					lineCount++, lineCount >>>= zero;
 					break;
-				case "SET":
+				case set:
 					state = one;
 					array.push(zero);
 					break;
-				case "COM":
+				case comm:
 					state = three;
 					break;
-				case "MCOM":
+				case mcom:
 					state = two;
 					break;
 				case undefined:
@@ -47,7 +47,7 @@ return function(code, ret = "arraybuffer") {
 					i = (len - one) >>> zero;
 					break;
 				default:
-					throw new SyntaxError("Unexpected token '" + token + "'");
+					throw new SyntaxError("Unexpected token '" + token + "'. Found at line " + lineCount + ", token " + i);
 			}
 		} else if (state === one) {
 			if (substate === zero) {
@@ -55,16 +55,17 @@ return function(code, ret = "arraybuffer") {
 				substate = one;
 			} else if (substate === one) {
 				if (token[zero] !== lb || token[token.length - one] !== rb) {
-					throw new SyntaxError("The type has to be bracketed to signify that '" + token + "' is a proper type.")
+					throw new SyntaxError("The type has to be bracketed to signify that '" + token + "' is a proper type. Found at line " + lineCount + ", token " + i)
 				}
 				const indext = typeOrder[token.slice(one, no)];
 				if (indext === undefined) {
-					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], and [BOOLEAN].")
+					throw new TypeError(token + " is not a valid type. The current types available are [UINT8], [UINT16], [INT8], [UFLOAT16], [UTF8STRING], and [BOOLEAN]. Found at line " + lineCount + ", token " + i)
 				}
 				array.push(indext);
 				substate = (indext + two + (indext === four ? two : zero)) >>> zero;
 			} else if (substate === two || substate === four) {
-				array.push(Math.max(substate === two ? zero : note, Math.min(+token + (substate === two ? zero : ote), tff)) >>> zero);
+				const check = substate === two
+				array.push(Math.max(check ? zero : note, Math.min(+token + (check ? zero : ote), tff)) >>> zero);
 				substate = zero;
 				state = zero;
 			} else if (substate === three) {
@@ -75,7 +76,7 @@ return function(code, ret = "arraybuffer") {
 			} else if (substate === five) {
 				// Make sure the values don't have any precision errors (TODO: update to make this more efficient later)
 				let value = Math.max(Math.min(+token, tff), zero);
-				let decimal = ((value % one) * tfs) >>> zero;
+				const decimal = ((value % one) * tfs) >>> zero;
 				value = value >>> zero;
 				array.push(value, decimal);
 				substate = zero;
@@ -91,7 +92,7 @@ return function(code, ret = "arraybuffer") {
 						let i = zero;
 						for (;i < len; i++, i >>>= zero) {
 							char = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type (that will come out in the future). Found at line " + lineCount + ", token " + i);
 							if (char === zero || char === st) {
 								console.warn(char === zero ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
 								array.push(char);
@@ -119,7 +120,7 @@ return function(code, ret = "arraybuffer") {
 									char = Number(code);
 								}
 							}
-							if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+							if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type (that will come in the future). Found at line " + lineCount + ", token " + i);
 							if (char === zero) {
 								console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
 								array.push(char);	
@@ -131,7 +132,7 @@ return function(code, ret = "arraybuffer") {
 					} else {
 						for (let j = zero; j !== len; j++, j >>>= zero) {
 							char = dec.charCodeAt(j) >>> zero;
-							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type.");
+							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type (that will come in the future). Found at line " + lineCount + ", token " + i);
 							array.push(char);
 						}
 					}
@@ -141,7 +142,7 @@ return function(code, ret = "arraybuffer") {
 				substate = zero;
 			} else if (substate === eight) {
 				const b = integ[token];
-				if (b === undefined) throw new TypeError("If you want to know how to use [UTF16STRING] or [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'TRUE', or 'FALSE', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'");
+				if (b === undefined) throw new TypeError("If you want to know how to use [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'TRUE', or 'FALSE', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'. Found at line " + lineCount + ", token " + i);
 				valuePassed = b;
 				substate -= two;
 			} else if (substate === ten) {
@@ -165,7 +166,7 @@ return function(code, ret = "arraybuffer") {
 		} else if (state === three) {
 			while (token[zero] !== newl && i !== len) {	
 				token = tokens[i];
-				i++;
+				i++, i >>>= zero;
 			}
 			state = zero;
 			lineCount++, lineCount >>>= zero;
