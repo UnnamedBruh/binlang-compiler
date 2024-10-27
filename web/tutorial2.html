@@ -1,3 +1,13 @@
+<h1>Glossary</h1>
+<ul>
+	<li>static-typed (adjective): determining types at compile-time other than runtime execution</li>
+	<li>unsigned (adjective): only representing positive values</li>
+	<li>signed (adjective): representing both positive and negative values, with a median of 0 and -1</li>
+	<li>bit (noun): a binary number that can represent two states - on (1), and off (0)</li>
+	<li>utf8 (noun): an encoding format, presumably used on files that only need 256 unique characters to represent</li>
+	<li>utf16 (noun): another encoding format, presumably used on files that need 65536 unique characters to represent</li>
+	<li>floor (verb): to round a value by excluding the decimal point</li>
+</ul>
 <h1>Defining Variables</h1>
 <p>The first iconic command ever, is to define a variable. It's the most important, and one of the oldest commands, ever. You can define a variable by using the <code>SET</code> operator. Here are important things to know:</p>
 <ul>
@@ -38,10 +48,17 @@
 			<li>The string uses the UTF8 encoding format, which makes it so the string can represent <b>256</b> unique characters.</li>
 			<li>The value takes up <b>one byte</b> per character, which the measuring can be dependent on how many characters are used in the string.</li>
 			<li><u>You can use this value for when you want to script a game dialogue, or a tutorial message of how to play the game.</u></li>
-			<li>The string value will throw an error if there is a character beyond the 256 character range. UTF16STRING will be a type that will later come in the future.</li>
+			<li>The string value will throw an error if there is a character beyond the 256 character range. <s>UTF16STRING will be a type that will later come in the future.</s> (it was added 10/27/2024)</li>
 		</ul></li>
 		<li>BOOLEAN:<ul>
 			<li><a>This value is very simple; it represents two values - <code>TRUE</code>, or <code>FALSE</code>.</a></li>
+		</ul></li>
+		<li>UTF16STRING:<ul>
+			<li><a style="background-color: yellow">This value is also a <u>parameter-based</u> type, which isn't a very common feature. A single parameter is needed, and the parameter is placed before the value. The parameter would make the compiler interpret the value in three different ways, depending on the parameter, like UTF8STRING.</a></li>
+			<li>The value can be represented at <u>any length</u> - there are no constraints, or any limit to the length of the string.</li>
+			<li>The string uses the UTF16 encoding format, which makes it so the string can represent <b>65536</b> unique characters.</li>
+			<li>The value takes up <b>two bytes</b> per character, which the measuring can be dependent on how many characters are used in the string.</li>
+			<li><u>You can use this value for when you would want to make messages compatible in different languages.</u></li>
 		</ul></li>
 	</ul></li>
 </ul>
