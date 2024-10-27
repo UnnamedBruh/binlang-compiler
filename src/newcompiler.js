@@ -1,7 +1,7 @@
 const BINLangCompilerNew = (function() {
 const regex = /\[[A-Z0-9]+\]|"([^"\n\\]|\\(\d+|[^ 0-9\n\t]))*"|\w+|-?\d+(\.\d*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0;
 const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1, set = "SET", comm = "COM", mcom = "MCOM";
-const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"BOOLEAN":eight}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
+const typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":four,"UTF16STRING":five,"BOOLEAN":eight}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."},
 integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE", blank = "\"\"", semi = ";";
 return function(code, ret = "arraybuffer") {
 	const array = [one], tokens = code.match(regex);
@@ -13,7 +13,7 @@ return function(code, ret = "arraybuffer") {
 		let id = amountOfIdentifiers;
 		for (let i = zero; i !== ea; i++, i >>>= zero) {
 			array.push(Math.min(tff, id));
-			id -= tfs;
+			id -= tff;
 		}
 		if (newi) {
 			identifiers[ident] = new Uint8Array(array);
@@ -140,6 +140,65 @@ return function(code, ret = "arraybuffer") {
 				}
 				state = zero;
 				substate = zero;
+			} else if (substate === seven) {
+				if (token === blank) {
+					array.push(zero, zero);
+				} else {
+					const dec = token.slice(one, no);
+					const len = dec.length;
+					let char = zero, end = true, config = zero;
+					if (valuePassed === zero) {
+						let i = zero;
+						for (;i < len; i++, i >>>= zero) {
+							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
+							char = [config % tfs, config >> eight]
+							if ((char[zero] === zero && char[one] === zero) || (char[zero] === tff && char[one] === tff)) {
+								console.warn((char[zero] === zero && char[one] === zero) ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
+								array.push(...char);
+								end = false;
+								break;
+							}
+							array.push(...char);
+						}
+					} else if (valuePassed === one) {
+						let j = zero;
+						for (;j !== len; j++, j >>>= zero) {
+							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
+							char = [config % tfs, config >> eight];
+							if (char[zero] === tff && char[one] === tff) {
+								if (isNaN(Number(dec[j + one]))) {
+									console.warn("An empty escaper can be removed from the string entirely, since there is no character to represent");
+								} else {
+									j++;
+									let code = "";
+									// Using 'true', so the condition can be used in the loop. It's a bit unconventional, but I think it's worth it
+									for (; true; j++, j >>>= zero) {
+										if (isNaN(Number(dec[j]))) break;
+										code += dec[j];
+									}
+									j--;
+									char = Number(code);
+								}
+							}
+							if (char[zero] === zero && char[one] === zero) {
+								console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
+								array.push(...char);
+								end = false;
+								break;
+							}
+							array.push(...char);
+						}
+					} else {
+						for (let j = zero; j !== len; j++, j >>>= zero) {
+							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
+							char = [config % tfs, config >> eight];
+							array.push(...char);
+						}
+					}
+					if (end) array.push(zero, zero);
+				}
+				state = zero;
+				substate = zero;
 			} else if (substate === eight) {
 				const b = integ[token];
 				if (b === undefined) throw new TypeError("If you want to know how to use [UTF8STRING], here is how you encountered this error:\nThe type would usually expect a setting that determines whether the string would allow backslash characters on numbers (e.g. \\0, \\1, etc.), and that setting can be rerpesented as either 'TRUE', or 'FALSE', without single quotes, respectively. And lastly\n\nUnexpected token '" + token + "'. Found at line " + lineCount + ", token " + i);
@@ -164,7 +223,7 @@ return function(code, ret = "arraybuffer") {
 			state = zero;
 			lineCount++, lineCount >>>= zero;
 		} else if (state === three) {
-			while (token[zero] !== newl && i !== len) {	
+			while (token !== newl && i !== len) {	
 				token = tokens[i];
 				i++, i >>>= zero;
 			}
