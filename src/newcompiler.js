@@ -68,7 +68,7 @@ return function(code, ret = "arraybuffer") {
 				state = zero;
 			} else if (substate === three) {
 				const val = Math.max(Math.min(tff, +token), zero);
-				array.push((val & tff) >>> zero, val >> eight);
+				array.push((val % tfs) >>> zero, val >> eight);
 				substate = zero;
 				state = zero;
 			} else if (substate === five) {
@@ -149,7 +149,7 @@ return function(code, ret = "arraybuffer") {
 						let i = zero;
 						for (;i < len; i++, i >>>= zero) {
 							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							char = [config & tff, config >> eight]
+							char = [config % tfs, config >> eight]
 							if ((char[zero] === zero && char[one] === zero) || (char[zero] === tff && char[one] === tff)) {
 								console.warn((char[zero] === zero && char[one] === zero) ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
 								array.push(...char);
@@ -162,7 +162,7 @@ return function(code, ret = "arraybuffer") {
 						let j = zero;
 						for (;j !== len; j++, j >>>= zero) {
 							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							char = [config & tff, config >> eight];
+							char = [config % tfs, config >> eight];
 							if (char[zero] === tff && char[one] === tff) {
 								if (isNaN(Number(dec[j + one]))) {
 									console.warn("An empty escaper can be removed from the string entirely, since there is no character to represent");
@@ -189,7 +189,7 @@ return function(code, ret = "arraybuffer") {
 					} else {
 						for (let j = zero; j !== len; j++, j >>>= zero) {
 							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							char = [config & tff, config >> eight];
+							char = [config % tfs, config >> eight];
 							array.push(...char);
 						}
 					}
