@@ -10,9 +10,10 @@ return function(code, ret = "arraybuffer") {
 		const ea = ((amountOfIdentifiers >> eight) + one) >>> zero, array = [];
 		let id = amountOfIdentifiers;
 		for (let i = zero; i !== ea; i++, i >>>= zero) {
-			array.push(Math.min(tff, id));
+			array.push(Math.min(tff, id) >>> zero);
 			id -= tff;
 		}
+		array.push(zero);
 		if (newi) {
 			identifiers[ident] = new Uint8Array(array);
 			amountOfIdentifiers++;
