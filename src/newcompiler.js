@@ -22,7 +22,7 @@ let functs = {"GREATERTHAN": {args: 1, func: function(type, value, type2, value2
 return function(code, ret = "arraybuffer") {
 	const array = [one], tokens = code.match(regex);
 	const len = tokens.length >>> zero;
-	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = one, substate = zero, valuePassed, wrap = false, identifiersVal = {}, currentIdentifier = null;
+	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = one, substate = zero, valuePassed, wrap = false, identifiersValues = {}, currentIdentifier = null;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
 		const ea = ((amountOfIdentifiers >> eight) + one) >>> zero, array = [];
