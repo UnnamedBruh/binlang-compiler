@@ -1,17 +1,18 @@
+const x = "arraybuffer", y = "result.binl";
 document.getElementById("compile").addEventListener("click", () => {
-	const program = document.getElementById("program").value
-	const time = performance.now()
-	const program = BINLangCompilerNew(program, "arraybuffer")
-	const t2 = performance.now()
-	document.getElementById("timetook").textContent = "Time took: " + (t2 - time) + " ms"
+	const h = document.getElementById("program").value;
+	const a = performance.now();
+	const p = BINLangCompilerNew(h, x);
+	const b = performance.now();
+	document.getElementById("timetook").textContent = "Time took: " + (t2 - time) + " ms";
 	if (document.getElementById("downloadfile").checked) {
-		const blob = new Blob([program], {type: "application/octet-stream"})
-		const bu = URL.createObjectURL(blob)
-		const a = document.createElement("a")
-		a.href = bu
-		a.download = "result.binl"
-		a.click()
-		a.remove()
-		URL.revokeObjectURL(bu)
+		const c = new Blob([p], {type: "application/octet-stream"});
+		const d = URL.createObjectURL(c);
+		const a = document.createElement("a");
+		a.href = d;
+		a.download = y;
+		a.click();
+		a.remove();
+		URL.revokeObjectURL(d);
 	}
 })
