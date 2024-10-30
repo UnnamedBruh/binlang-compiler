@@ -8,11 +8,11 @@ function coerce(type, value, t, wrap) {
 			switch (type) {
 				case three:
 				case one:
-					return [t, [value[0]]]
+					return [t, [value[zero]]]
 				case two:
 					return [t, [value + ote]]
 				case six:
-					return [t, [()]]
+					return [t, [Number(String.fromCharCode(...value.slice(zero, no))) >>> zero]]
 			}
 	}
 }
