@@ -1,10 +1,28 @@
 const BINLangCompilerNew = (function() {
-const regex = /\[[A-Z0-9]+\]|"([^"\n\\]|\\(\d+|[^ 0-9\n\t]))*"|\w+|-?\d+(\.\d*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0;
-const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, eleven = 11 >>> zero, twelve = 12 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1, set = "SET", comm = "COM", mcom = "MCOM", typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":six,"UTF16STRING":ten,"BOOLEAN":eight}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."}, integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE", blank = "\"\"", semi = ";";
+const regex = /\[[A-Z0-9]+\]|\<[A-Z_]+\>|"([^"\n\\]|\\(\d+|[^ 0-9\n\t]))*"|\w+|-?\d+(\.\d*)?|[\n;](?:[\n;]*)|[^ \t]/gms, reg2 = /CHAR/, zero = 0 >>> 0;
+const one = 1 >>> zero, two = 2 >>> zero, three = 3 >>> zero, four = 4 >>> zero, five = 5 >>> zero, six = 6 >>> zero, seven = 7 >>> zero, eight = 8 >>> zero, nine = 9 >>> zero, ten = 10 >>> zero, eleven = 11 >>> zero, twelve = 12 >>> zero, tff = 255 >>> zero, tfs = 256 >>> zero, note = -128, ote = 128 >>> zero, st = 65536 >>> zero, no = -1, set = "SET", comm = "COM", mcom = "MCOM", typeOrder = {"UINT8":zero,"UINT16":one,"INT8":two,"UFLOAT16":three,"UTF8STRING":six,"UTF16STRING":ten,"BOOLEAN":eight}, stringEsc = {"n":ten,"t":nine,"\\":92>>>zero}, back = "\\", msgWarn = {"0": "Ending the string using a nullish character is NOT recommended! You should use the end of the string literal instead!", "65536": "This character (CHAR) cannot be escaped yet. Since this issue occurred, the unexpected escape sequence will be replaced with a null character to terminate the string."}, integ = {"STANDARD":zero,"INTEGER":one,"NONE":two}, lb = "[", rb = "]", newl = "\n", eco = "ECOM", trst = "TRUE", fast = "FALSE", blank = "\"\"", semi = ";", wrapInt = "<WRAP_BYTES>", fs = 46 >>> zero;
+function coerce(type, value, t, wrap) {
+	if (type === t) return [type, value];
+	switch (t) {
+		case zero:
+			switch (type) {
+				case three:
+				case one:
+					return [t, [value[0]]]
+				case two:
+					return [t, [value + ote]]
+				case six:
+					return [t, [()]]
+			}
+	}
+}
+let functs = {"GREATERTHAN": {args: 1, func: function(type, value, type2, value2, wrap) {
+	[type2, value2] = coerce(type2, value2, type, wrap)
+}}};
 return function(code, ret = "arraybuffer") {
 	const array = [one], tokens = code.match(regex);
 	const len = tokens.length >>> zero;
-	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = one, substate = zero, valuePassed;
+	let state = zero, token, lineCount = zero, identifiers = {}, amountOfIdentifiers = one, substate = zero, valuePassed, wrap = false, identifiersVal = {}, currentIdentifier = null;
 	function compress(ident, newi = false) {
 		if (identifiers[ident]) return identifiers[ident];
 		const ea = ((amountOfIdentifiers >> eight) + one) >>> zero, array = [];
@@ -16,7 +34,7 @@ return function(code, ret = "arraybuffer") {
 		array.push(zero);
 		if (newi) {
 			identifiers[ident] = new Uint8Array(array);
-			amountOfIdentifiers++;
+			amountOfIdentifiers++, amountOfIdentifiers >>>= zero;
 			return identifiers[ident];
 		} else {
 			return new Uint8Array(array);
@@ -45,11 +63,14 @@ return function(code, ret = "arraybuffer") {
 					// Somehow, somewhere, a weird thing happened.
 					i = (len - one) >>> zero;
 					break;
+				case wrapInt:
+					wrap = true;
 				default:
 					throw new SyntaxError("Unexpected token '" + token + "'. Found at line " + lineCount + ", token " + i);
 			}
 		} else if (state === one) {
 			if (substate === zero) {
+				currentIdentifier = token;
 				array.push(...compress(token, true), zero);
 				substate = one;
 			} else if (substate === one) {
@@ -64,20 +85,27 @@ return function(code, ret = "arraybuffer") {
 				substate = (indext + two + (indext === four ? two : zero)) >>> zero;
 			} else if (substate === two || substate === four) {
 				const check = substate === two
-				array.push(Math.max(check ? zero : note, Math.min(+token + (check ? zero : ote), tff)) >>> zero);
+				if (wrap) {
+					array.push(((Math.abs(+token) + ote) % tfs) >>> zero);
+				} else {
+					array.push(Math.max(check ? zero : note, Math.min(+token + (check ? zero : ote), tff)) >>> zero);
+				}
+				identifiersValues[currentIdentifier] = {"t": array[(array.length - two) >>> zero], "v": [array[(array.length - one) >>> zero]]};
 				substate = zero;
 				state = zero;
 			} else if (substate === three) {
-				const val = Math.max(Math.min(tff, +token), zero);
+				const val = wrap ? Math.abs(+token) % tfs : Math.max(Math.min(tff, +token), zero);
 				array.push((val % tfs) >>> zero, val >> eight);
+				identifiersValues[currentIdentifier] = {"t": array[(array.length - three) >>> zero], "v": [array[(array.length - two) >>> zero], array[(array.length - one) >>> zero]]};
 				substate = zero;
 				state = zero;
 			} else if (substate === five) {
 				// Make sure the values don't have any precision errors (TODO: update to make this more efficient later)
-				let value = Math.max(Math.min(+token, tff), zero);
+				let value = wrap ? Math.abs(+token) % tfs : Math.max(Math.min(+token, tff), zero);
 				const decimal = ((value % one) * tfs) >>> zero;
 				value = value >>> zero;
 				array.push(value, decimal);
+				identifiersValues[currentIdentifier] = {"t": array[(array.length - three) >>> zero], "v": [array[(array.length - two) >>> zero], array[(array.length - one) >>> zero]]};
 				substate = zero;
 				state = zero;
 			} else if (substate === six) {
@@ -91,7 +119,9 @@ return function(code, ret = "arraybuffer") {
 						let i = zero;
 						for (;i < len; i++, i >>>= zero) {
 							char = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
+							if (wrap) {
+								char = (char % tfs) >>> zero;
+							} else if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[i] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
 							if (char === zero || char === st) {
 								console.warn(char === zero ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
 								array.push(char);
@@ -119,7 +149,9 @@ return function(code, ret = "arraybuffer") {
 									char = Number(code);
 								}
 							}
-							if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
+							if (wrap) {
+								char = (char % tfs) >>> zero;
+							} else if (char > tff && dec[j] !== back) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
 							if (char === zero) {
 								console.warn("Ending the string using a nullish character in the literal is NOT recommended! You should use the end of the string literal instead!");
 								array.push(char);
@@ -131,12 +163,15 @@ return function(code, ret = "arraybuffer") {
 					} else {
 						for (let j = zero; j !== len; j++, j >>>= zero) {
 							char = dec.charCodeAt(j) >>> zero;
-							if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
+							if (wrap) {
+								char = (char % tfs) >>> zero;
+							} else if (char > tff) throw new TypeError("Found a character outside of the UTF8 range: '" + dec[j] + "'. If you need to use a character outside of the UTF8 range, please use the [UTF16STRING] type. Found at line " + lineCount + ", token " + i);
 							array.push(char);
 						}
 					}
 					if (end) array.push(zero);
 				}
+				identifiersValues[currentIdentifier] = {"t": array[array.length - token.length + one], "v": array.slice(array.length - token.length + two, array.length)}
 				state = zero;
 				substate = zero;
 			} else if (substate === eleven) {
@@ -150,7 +185,7 @@ return function(code, ret = "arraybuffer") {
 						let i = zero;
 						for (;i < len; i++, i >>>= zero) {
 							config = (dec[i] === back ? stringEsc[dec[i++ + one] || st] : dec.charCodeAt(i)) >>> zero;
-							char = [config % tfs, config >> eight]
+							char = [config % tfs, config >> eight];
 							if ((char[zero] === zero && char[one] === zero) || (char[zero] === tff && char[one] === tff)) {
 								console.warn((char[zero] === zero && char[one] === zero) ? msgWarn[char] : msgWarn[char].replace(reg2, dec[i]));
 								array.push(...char);
@@ -196,6 +231,7 @@ return function(code, ret = "arraybuffer") {
 					}
 					if (end) array.push(zero, zero);
 				}
+				identifiersValues[currentIdentifier] = {"t": array[array.length - (token.length * two) + one], "v": array.slice(array.length - (token.length * two) + two, array.length)}
 				state = zero;
 				substate = zero;
 			} else if (substate === eight) {
@@ -211,6 +247,7 @@ return function(code, ret = "arraybuffer") {
 				} else {
 					array.push(b >>> zero);
 				}
+				identifiersValues[currentIdentifier] = {"t": array[array.length - two], "v": array[array.length - one]}
 				substate = zero;
 				state = zero;
 			} else if (substate === twelve) {
